@@ -21,10 +21,13 @@ export default function RegisterPage() {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 
-	// Check authentication type and redirect if not LOCAL
+	// Check authentication type and registration status, redirect if necessary
 	useEffect(() => {
 		const authType = process.env.NEXT_PUBLIC_FASTAPI_BACKEND_AUTH_TYPE || "GOOGLE";
-		if (authType !== "LOCAL") {
+		const registrationEnabled =
+			process.env.NEXT_PUBLIC_REGISTRATION_ENABLED?.toLowerCase() === "true";
+
+		if (authType !== "LOCAL" || !registrationEnabled) {
 			router.push("/login");
 		}
 	}, [router]);

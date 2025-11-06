@@ -18,11 +18,15 @@ export function LocalLoginForm() {
 	const [errorTitle, setErrorTitle] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [authType, setAuthType] = useState<string | null>(null);
+	const [registrationEnabled, setRegistrationEnabled] = useState(false);
 	const router = useRouter();
 
 	useEffect(() => {
 		// Get the auth type from environment variables
 		setAuthType(process.env.NEXT_PUBLIC_FASTAPI_BACKEND_AUTH_TYPE || "GOOGLE");
+		setRegistrationEnabled(
+			process.env.NEXT_PUBLIC_REGISTRATION_ENABLED?.toLowerCase() === "true"
+		);
 	}, []);
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -235,7 +239,7 @@ export function LocalLoginForm() {
 				</button>
 			</form>
 
-			{authType === "LOCAL" && (
+			{authType === "LOCAL" && registrationEnabled && (
 				<div className="mt-4 text-center text-sm">
 					<p className="text-gray-600 dark:text-gray-400">
 						{t("dont_have_account")}{" "}
