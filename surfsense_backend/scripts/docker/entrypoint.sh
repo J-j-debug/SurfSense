@@ -11,19 +11,17 @@ cleanup() {
 
 trap cleanup SIGTERM SIGINT
 
+echo "Running model initialization..."
+python -c "from app.config import Config"
+echo "Model initialization complete."
+
 echo "Starting FastAPI Backend..."
 python main.py &
 backend_pid=$!
 
-# Wait a bit for backend to initialize
-sleep 5
-
 echo "Starting Celery Worker..."
 celery -A app.celery_app worker --loglevel=info &
 celery_worker_pid=$!
-
-# Wait a bit for worker to initialize
-sleep 3
 
 echo "Starting Celery Beat..."
 celery -A app.celery_app beat --loglevel=info &
@@ -36,4 +34,3 @@ wait -n
 
 # If we get here, one process exited, so exit with its status
 exit $?
-
